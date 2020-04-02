@@ -1,6 +1,5 @@
 
 #include <tm4c123gh6pm.h>
-#include <stdbool.h>
 
 #define INPUT  0
 #define OUTPUT 1
@@ -9,7 +8,8 @@
 #define SOLENOID_2 PORTB_BIT2
 #define SOLENOID_3 PORTB_BIT3
 
-void delay(unsigned int);
+void systick_delay(unsigned int);
+void init_systick();
 
 void main()
 {
@@ -21,27 +21,39 @@ void main()
     const bool solenoid_2_pattern[] = {0, 0, 1, 1, 0, 0, 1, 1, ...};
     const bool solenoid_3_pattern[] = {0, 1, 0, 1, 0, 1, 0, 1, ...};
 
+    init_systick();
+
     float strumming_rate = 0.5;
     int i = 0;
 
-    while (true)
+    while (1)
     {
         SOLENOID_1 = solenoid_1_pattern[i];
         SOLENOID_2 = solenoid_2_pattern[i];
         SOLENOID_3 = solenoid_3_pattern[i];
 
-        delay(1000 / strumming_rate);
+        systick_delay(1000 / strumming_rate);
         i++;
     }
 }
 
-void delay(unsigned int num_millisecs)
+void systick_delay(unsigned long delay)
 {
-    unsigned int millisec_ctr;
-    unsigned int loop_ctr;
+    unsigned long start_time = NVIC_ST_CURRENT_R;
+    volatile unsigned long time_elapsed;
 
-    for (millisec_ctr = 0; millisec_ctr < num_millisecs; millisec_ctr++)
+    do
     {
-        for (loop_ctr = 0; loop_ctr < 331; loop_ctr++);
+        time_elapsed = (start_time - NVIC_ST_CURRENT_R) & 0x00FFFFFF;
     }
+    while(time_elapsed <= delay * 6000);
+}
+
+void init_systick()
+{
+    NVIC_ST_CTRL_R = 0;
+    NVIC_ST_RELOAD_R = NVIC_ST_RELOAD_M;
+    NVIC_ST_CURRENT_R = 0;
+
+    NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE + NVIC_ST_CTRL_CLK_SRC;
 }
