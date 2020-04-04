@@ -1,43 +1,44 @@
 
+#include <stdint.h>
+#include <stdbool.h>
 #include <tm4c123gh6pm.h>
 
 #define INPUT  0
 #define OUTPUT 1
 
-#define SOLENOID_1 PORTB_BIT1
-#define SOLENOID_2 PORTB_BIT2
-#define SOLENOID_3 PORTB_BIT3
-
 void systick_delay(unsigned int);
 void init_systick();
+void PortF_Init();
+void chord_change();
+
 
 void main()
 {
-    DDRB_BIT1 = OUTPUT;
-    DDRB_BIT2 = OUTPUT;
-    DDRB_BIT3 = OUTPUT;
 
-    const bool solenoid_1_pattern[] = {0, 0, 0, 0, 1, 1, 1, 1, ...};
-    const bool solenoid_2_pattern[] = {0, 0, 1, 1, 0, 0, 1, 1, ...};
-    const bool solenoid_3_pattern[] = {0, 1, 0, 1, 0, 1, 0, 1, ...};
+    // Chord Pattern like C major, D major...
+    volatile int pattern_C[] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0};
+    volatile int solenoid_2_pattern[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 1};
+    volatile int solenoid_3_pattern[] = {0, 1, 0, 1, 0, 1, 0, 1, 1, 1};
 
     init_systick();
 
     float strumming_rate = 0.5;
-    int i = 0;
+
+    PortF_Init();
 
     while (1)
     {
-        SOLENOID_1 = solenoid_1_pattern[i];
-        SOLENOID_2 = solenoid_2_pattern[i];
-        SOLENOID_3 = solenoid_3_pattern[i];
+        // Turn on/off gpio pins
+        chord_change(pattern_C);
 
-        systick_delay(1000 / strumming_rate);
-        i++;
+        // Add delay for when the strumming should change using timer module
+        // Use strumming_rate variable to change the time
+        // something like systick_delay(1000 / strumming_rate);
+
     }
 }
 
-void systick_delay(unsigned long delay)
+/*void systick_delay(unsigned long delay)
 {
     unsigned long start_time = NVIC_ST_CURRENT_R;
     volatile unsigned long time_elapsed;
@@ -47,7 +48,7 @@ void systick_delay(unsigned long delay)
         time_elapsed = (start_time - NVIC_ST_CURRENT_R) & 0x00FFFFFF;
     }
     while(time_elapsed <= delay * 6000);
-}
+}*/
 
 void init_systick()
 {
@@ -56,4 +57,69 @@ void init_systick()
     NVIC_ST_CURRENT_R = 0;
 
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE + NVIC_ST_CTRL_CLK_SRC;
+}
+
+void PortF_Init(void) {
+    SYSCTL_RCGC2_R |= 0x00000020;           // activate clock for PortF
+    while ((SYSCTL_PRGPIO_R & 0x00000020) == 0)
+    {};                          // wait until PortF is ready
+    GPIO_PORTF_LOCK_R = 0x4C4F434B;         // unlock GPIO PortF
+    GPIO_PORTF_CR_R = 0x1F;                 // allow changes to PF4-0
+
+    GPIO_PORTF_AMSEL_R = 0x00;              // disable analog on PortF
+    GPIO_PORTF_PCTL_R = 0x00000000;         // use PF4-0 as GPIO
+    GPIO_PORTF_DIR_R = 0x0E;                // PF4,PF0 in, PF3-1 out
+    GPIO_PORTF_AFSEL_R = 0x00;              // disable alt function on PF
+    GPIO_PORTF_PUR_R = 0x11;                // enable pull-up on PF0,PF4
+    GPIO_PORTF_DEN_R = 0x1F;                // enable digital I/O on PF4-0
+}
+
+void chord_change(int chord[]){
+    // step 1: turn all pins 0
+
+
+    // step 2: check and turn individual pin
+    if(chord[0] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[1] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[2] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[3] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[4] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[5] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[6] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[7] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[8] == 1){
+        // switch the pin to 1
+
+    }
+    if(chord[9] == 1){
+        // switch the pin to 1
+
+    }
+
+
+
 }
