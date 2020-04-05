@@ -6,23 +6,24 @@
 #define INPUT  0
 #define OUTPUT 1
 
-void systick_delay(unsigned int);
+void systick_delay(unsigned long);
 void init_systick();
 void PortF_Init();
-void chord_change();
-
+void chord_change(int chord[]);
 
 void main()
 {
 
     // Chord Pattern like C major, D major...
-    volatile int pattern_C[] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0};
+    int pattern_C[] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0};
     volatile int solenoid_2_pattern[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 1};
     volatile int solenoid_3_pattern[] = {0, 1, 0, 1, 0, 1, 0, 1, 1, 1};
 
     init_systick();
 
     float strumming_rate = 0.5;
+    int i;
+    i=0;
 
     PortF_Init();
 
@@ -31,21 +32,15 @@ void main()
         // Turn on/off gpio pins
         chord_change(pattern_C);
 
-        // Add delay for when the strumming should change using timer module
-        // Use strumming_rate variable to change the time
-        // something like systick_delay(1000 / strumming_rate);
-        // for now
-        while(i<400000){i++;}
-        i=0;
-        while(i<400000){i++;}
-        i=0;
-        while(i<400000){i++;}
-        i=0;
+        // Duration for which the same chord is played
+        systick_delay(1000 / strumming_rate);
+
+        i++;
 
     }
 }
 
-/*void systick_delay(unsigned long delay)
+void systick_delay(unsigned long delay)
 {
     unsigned long start_time = NVIC_ST_CURRENT_R;
     volatile unsigned long time_elapsed;
@@ -55,9 +50,9 @@ void main()
         time_elapsed = (start_time - NVIC_ST_CURRENT_R) & 0x00FFFFFF;
     }
     while(time_elapsed <= delay * 6000);
-}*/
+}
 
-void init_systick()
+void init_systick(void)
 {
     NVIC_ST_CTRL_R = 0;
     NVIC_ST_RELOAD_R = NVIC_ST_RELOAD_M;
