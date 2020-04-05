@@ -34,6 +34,13 @@ void main()
         // Add delay for when the strumming should change using timer module
         // Use strumming_rate variable to change the time
         // something like systick_delay(1000 / strumming_rate);
+        // for now
+        while(i<400000){i++;}
+        i=0;
+        while(i<400000){i++;}
+        i=0;
+        while(i<400000){i++;}
+        i=0;
 
     }
 }
