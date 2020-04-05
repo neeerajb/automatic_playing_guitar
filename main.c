@@ -3,14 +3,21 @@
 #include <stdbool.h>
 #include <tm4c123gh6pm.h>
 
+// definitions
 #define INPUT  0
 #define OUTPUT 1
 
+// variables
+unsigned long In;
+unsigned long Out;
+
+// functions
 void systick_delay(unsigned long);
 void init_systick();
 void PortF_Init();
 void chord_change(int chord[]);
 
+// main code
 void main()
 {
 
@@ -64,7 +71,7 @@ void init_systick(void)
 void PortF_Init(void) {
     SYSCTL_RCGC2_R |= 0x00000020;           // activate clock for PortF
     while ((SYSCTL_PRGPIO_R & 0x00000020) == 0)
-    {};                          // wait until PortF is ready
+    {};                                     // wait until PortF is ready
     GPIO_PORTF_LOCK_R = 0x4C4F434B;         // unlock GPIO PortF
     GPIO_PORTF_CR_R = 0x1F;                 // allow changes to PF4-0
 
@@ -83,6 +90,9 @@ void chord_change(int chord[]){
     // step 2: check and turn individual pin
     if(chord[0] == 1){
         // switch the pin to 1
+        In = GPIO_PORTF_DATA_R;             // change port as needed
+        Out = In & pin;                     // pin = 0xFB for eg. FB = 11111011, assigns bit2=0
+        GPIO_PORTF_DATA_R = Out;            // set the pin according to the pin variable
 
     }
     if(chord[1] == 1){
