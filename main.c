@@ -86,12 +86,13 @@ void PortF_Init(void) {
 void chord_change(int chord[]){
     // step 1: turn all pins 0
 
+    GPIO_PORTF_DATA_R = GPIO_PORTF_DATA_R & 0xF1;
 
     // step 2: check and turn individual pin
     if(chord[0] == 1){
-        // switch the pin to 1
+        // switch the pin PF1 to 1
         In = GPIO_PORTF_DATA_R;             // change port as needed
-        Out = In & pin;                     // pin = 0xFB for eg. FB = 11111011, assigns bit2=0
+        Out = In | 0x02;                     // PF1 set high
         GPIO_PORTF_DATA_R = Out;            // set the pin according to the pin variable
 
     }
@@ -108,8 +109,10 @@ void chord_change(int chord[]){
 
     }
     if(chord[4] == 1){
-        // switch the pin to 1
-
+        // switch the pin PF2 to 1
+        In = GPIO_PORTF_DATA_R;             // change port as needed
+        Out = In | 0x04;                     // PF2 set high
+        GPIO_PORTF_DATA_R = Out;            // set the pin according to the pin variable
     }
     if(chord[5] == 1){
         // switch the pin to 1
@@ -124,8 +127,10 @@ void chord_change(int chord[]){
 
     }
     if(chord[8] == 1){
-        // switch the pin to 1
-
+        // switch the pin PF3 to 1
+        In = GPIO_PORTF_DATA_R;             // change port as needed
+        Out = In | 0x08;                     // PF3 set high
+        GPIO_PORTF_DATA_R = Out;            // set the pin according to the pin variable
     }
     if(chord[9] == 1){
         // switch the pin to 1
