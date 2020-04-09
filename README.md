@@ -11,8 +11,10 @@ This project uses servo motor and solenoids to make the guitar auto-play ~~itsel
  
     Replaced with SysTick functionality for now
 
- 2. Add interrupts for basic controls (start, stop, pause, speed up, speed down, etc.)
+ 2. Add interrupts for basic controls (start, stop, pause, speed up, speed down, etc.) worked on by Neeraj
+    ~~switch 1: start and stop the code~~
+    ~~switch 2: strumming time increase or decrease~~
  
- 3. ~~Add strumming capability~~ commented out?
+ 3. ~~Add strumming capability~~ 
  
- 4. Decide on which solenoid combinations (notes) to play to be marked clearly in code
+ 4. ~~Decide on which solenoid combinations (notes) to play to be marked clearly in code~~

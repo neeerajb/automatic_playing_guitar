@@ -1,11 +1,6 @@
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <tm4c123gh6pm.h>
-
-// definitions
-#define INPUT  0
-#define OUTPUT 1
 
 // variables
 unsigned long In;
@@ -29,6 +24,7 @@ void main()
     init_systick();
 
     float strumming_rate = 1.9;
+    float inc = 0.1
     int i;
     i=0;
 
@@ -43,6 +39,26 @@ void main()
         systick_delay(1000 * strumming_rate);
         systick_delay(1000 * strumming_rate);
 
+        // Increase/Decrease the strumming time
+        if(GPIO_PORTF_DATA_R & 0x10 == 0x10)        // checks if the switch 2 is pressed
+        {
+            strumming rate += inc;
+
+            if(strumming rate > 2.5){               // 2.5 is achieved after testing. beyond that, the timer is at its limit
+                strumming rate = 1;                 // low strumming rate gives almost no time to play
+            }
+        }
+
+        // Start or stop the code
+        if(GPIO_PORTF_DATA_R & 0x01 == 0x01){
+
+            // add a delay after code starts or stop
+            systick_delay(2000);                    // Around 2 seconds
+
+            while(GPIO_PORTF_DATA_R & 0x01 != 0x01){
+                // wait for the switch to be pressed
+            }
+        }
         i++;
 
     }
