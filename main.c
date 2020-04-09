@@ -28,7 +28,7 @@ void main()
 
     init_systick();
 
-    float strumming_rate = 0.5;
+    float strumming_rate = 1.9;
     int i;
     i=0;
 
@@ -40,7 +40,8 @@ void main()
         chord_change(pattern_C);
 
         // Duration for which the same chord is played
-        systick_delay(1000 / strumming_rate);
+        systick_delay(1000 * strumming_rate);
+        systick_delay(1000 * strumming_rate);
 
         i++;
 
@@ -87,6 +88,7 @@ void chord_change(int chord[]){
     // step 1: turn all pins 0
 
     GPIO_PORTF_DATA_R = GPIO_PORTF_DATA_R & 0xF1;
+    systick_delay(800);
 
     // step 2: check and turn individual pin
     if(chord[0] == 1){
