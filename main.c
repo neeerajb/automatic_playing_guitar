@@ -21,6 +21,7 @@ void main()
     volatile int solenoid_2_pattern[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 1};
     volatile int solenoid_3_pattern[] = {0, 1, 0, 1, 0, 1, 0, 1, 1, 1};
 
+    // Initialize SysTick with busy-wait running at bus clock:
     init_systick();
 
     float strumming_rate = 1.9;
@@ -66,6 +67,8 @@ void main()
 
 void systick_delay(unsigned long delay)
 {
+    // Time delay using busy-wait.
+
     unsigned long start_time = NVIC_ST_CURRENT_R;
     volatile unsigned long time_elapsed;
 
@@ -78,10 +81,13 @@ void systick_delay(unsigned long delay)
 
 void init_systick(void)
 {
-    NVIC_ST_CTRL_R = 0;
-    NVIC_ST_RELOAD_R = NVIC_ST_RELOAD_M;
-    NVIC_ST_CURRENT_R = 0;
+    // Initialize SysTick with busy-wait running at bus clock.
 
+    NVIC_ST_CTRL_R = 0;                  // Disable SysTick during setup.
+    NVIC_ST_RELOAD_R = NVIC_ST_RELOAD_M; // Maximum reload value.
+    NVIC_ST_CURRENT_R = 0;               // Any write to current clears it.
+
+    // Enable SysTick with core clock:
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE + NVIC_ST_CTRL_CLK_SRC;
 }
 
