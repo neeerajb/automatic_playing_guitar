@@ -21,7 +21,7 @@ void main()
     int pattern_E[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 1};
     int pattern_Em[] = {0, 1, 0, 1, 0, 1, 0, 1, 1, 1};
 
-    // Initialize SysTick with busy-wait running at bus clock:
+// Initialize SysTick with busy-wait running at bus clock:
     init_systick();
 
     float strumming_rate = 1.9;
@@ -57,7 +57,7 @@ void main()
             }
         }
 
-        // Start or stop the code
+        // Start or stop the chords
         if(GPIO_PORTF_DATA_R & 0x01 == 0x01){
 
             GPIO_PORTF_DATA_R = GPIO_PORTF_DATA_R & 0xF1;
@@ -124,7 +124,7 @@ void chord_change(int chord[]){
     if(chord[0] == 1){
         // switch the pin PF1 to 1
         In = GPIO_PORTF_DATA_R;             // change port as needed
-        Out = In | 0x02;                     // PF1 set high
+        Out = In | 0x02;                    // PF1 set high
         GPIO_PORTF_DATA_R = Out;            // set the pin according to the pin variable
 
     }
