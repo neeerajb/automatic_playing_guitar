@@ -5,6 +5,7 @@
 // variables
 unsigned long In;
 unsigned long Out;
+float strumming_rate = 2.3;
 
 // functions
 void systick_delay(unsigned long);
@@ -18,13 +19,13 @@ void main()
 
     // Chord Pattern like C major, D major...
     int pattern_C[] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0};
-    int pattern_E[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 1};
-    int pattern_Em[] = {0, 1, 0, 1, 0, 1, 0, 1, 1, 1};
+    int pattern_B[] = {0, 0, 1, 1, 1, 0, 1, 1, 0, 1};
+    int pattern_R[] = {1, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+    int pattern_G[] = {0, 1, 0, 1, 0, 1, 0, 1, 1, 1};
 
 // Initialize SysTick with busy-wait running at bus clock:
     init_systick();
 
-    float strumming_rate = 1.9;
     float inc = 0.1;
     int i=-1;
 
@@ -37,10 +38,13 @@ void main()
             chord_change(pattern_C);
         }
         if(i==1){                                   // Max value of i depends upon array of song
-            chord_change(pattern_E);
+            chord_change(pattern_R);
         }
         if(i==2){                                   // Max value of i depends upon array of song
-            chord_change(pattern_Em);
+            chord_change(pattern_G);
+        }
+        if(i==3){                                   // Max value of i depends upon array of song
+            chord_change(pattern_B);
             i=-1;
         }
         // Duration for which the same chord is played
@@ -48,7 +52,7 @@ void main()
         systick_delay(1000 * strumming_rate);
 
         // Increase/Decrease the strumming time
-        if(GPIO_PORTF_DATA_R & 0x10 == 0x10)        // checks if the switch 2 is pressed
+        if(GPIO_PORTF_DATA_R & 0x10 == 0x10)        // checks if the switch 1 is pressed
         {
             strumming_rate += inc;
 
@@ -64,7 +68,7 @@ void main()
             // add a delay after code starts or stop
             systick_delay(2000);                    // Around 2 seconds
 
-            while(GPIO_PORTF_DATA_R & 0x01 != 0x01){
+            while(GPIO_PORTF_DATA_R & 0x01 == 0x01){
                 // wait for the switch to be pressed
             }
         }
@@ -117,7 +121,7 @@ void PortF_Init(void) {
 void chord_change(int chord[]){
     // step 1: turn all pins 0
 
-    GPIO_PORTF_DATA_R = GPIO_PORTF_DATA_R & 0xF1;
+    GPIO_PORTF_DATA_R = GPIO_PORTF_DATA_R & 0xE0;
     systick_delay(800);
 
     // step 2: check and turn individual pin
